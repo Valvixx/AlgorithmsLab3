@@ -5,23 +5,24 @@
 struct node
 {
 	char inf[256];  // полезная информация
+	int priority;
 	struct node* next; // ссылка на следующий элемент
 };
 
 struct node* head = NULL, * last = NULL, * f = NULL; // указатели на первый и последний элементы списка
-int dlinna = 0;
 
 // Функции добавления элемента, просмотра списка
-void spstore(void), review(void), del(char* name);
+void spstore(), review(), del(char* name);
 
 char find_el[256];
 struct node* find(char* name); // функция нахождения элемента
-struct node* get_struct(void); // функция создания элемента
+struct node* get_struct(); // функция создания элемента
 
-struct node* get_struct(void)
+struct node* get_struct()
 {
 	struct node* p = NULL;
 	char s[256];
+	int priority;
 
 	if ((p = (node*)malloc(sizeof(struct node))) == NULL)  // выделяем память под новый элемент списка
 	{
@@ -38,32 +39,44 @@ struct node* get_struct(void)
 	}
 	strcpy(p->inf, s);
 
+	printf("Введите приоритет объекта: \n");
+	scanf("%d", &priority);
+	p->priority = priority;
+
 	p->next = NULL;
 
 	return p;		// возвращаем указатель на созданный элемент
 }
 
 /* Последовательное добавление в список элемента (в конец)*/
-void spstore(void)
+
+/* Добавление элемента в список с учетом приоритета */
+void spstore()
 {
-	struct node* p = NULL;
-	p = get_struct();
-	if (head == NULL && p != NULL)	// если списка нет, то устанавливаем голову списка
+	struct node* p = get_struct();
+	if (p == NULL) return;
+
+	if (head == NULL || p->priority > head->priority)  // если списка нет или приоритет больше, чем у головы
 	{
+		p->next = head;
 		head = p;
-		last = p;
+		if (last == NULL) last = p; // если список был пуст
 	}
-	else if (head != NULL && p != NULL) // список уже есть, то вставляем в конец
+	else
 	{
-		last->next = p;
-		last = p;
+		struct node* current = head;
+		while (current->next != NULL && current->next->priority >= p->priority)
+		{
+			current = current->next;
+		}
+		p->next = current->next;
+		current->next = p;
+		if (current == last) last = p;  // обновляем last, если вставка в конец
 	}
-	return;
 }
 
-
 /* Просмотр содержимого списка. */
-void review(void)
+void review()
 {
 	struct node* struc = head;
 	if (head == NULL)
@@ -72,10 +85,9 @@ void review(void)
 	}
 	while (struc)
 	{
-		printf("Имя - %s, \n", struc->inf);
+		printf("Имя - %s, Приоритет - %d\n", struc->inf, struc->priority);
 		struc = struc->next;
 	}
-	return;
 }
 
 /* Поиск элемента по содержимому. */
@@ -158,4 +170,10 @@ void del(char* name)
 
 int main() {
 	SetConsoleOutputCP(CP_UTF8);
+	spstore();
+	spstore();
+	spstore();
+	review();
+
+	return 0;
 }
