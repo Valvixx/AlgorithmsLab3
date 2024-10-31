@@ -188,6 +188,77 @@ void review_queue() {
     }
 }
 
+// ---Стек---
+
+struct StackNode {
+    char inf[256];  // Полезная информация (данные)
+    StackNode* next; // Указатель на следующий элемент
+};
+
+// Указатель на вершину стека
+StackNode* top = NULL;
+
+// Функция для создания нового элемента стека
+StackNode* createStackNode(const char* data) {
+    StackNode* newNode = (StackNode*)malloc(sizeof(StackNode));
+    if (!newNode) {
+        printf("Ошибка при выделении памяти\n");
+        exit(1);
+    }
+    strcpy(newNode->inf, data);
+    newNode->next = NULL;
+    return newNode;
+}
+
+// Функция добавления в стек (push)
+void push(const char* data) {
+    StackNode* newNode = createStackNode(data);
+    newNode->next = top;  // Новый элемент указывает на текущую вершину
+    top = newNode;        // Вершина теперь указывает на новый элемент
+}
+
+// Функция удаления из стека (pop)
+void pop() {
+    if (top == NULL) {
+        printf("Стек пуст\n");
+        return;
+    }
+    StackNode* temp = top;
+    printf("Удаление элемента: %s\n", temp->inf);
+    top = top->next;  // Вершина смещается на следующий элемент
+    free(temp);       // Освобождаем память удаленного элемента
+}
+
+// Просмотр содержимого стека
+void reviewStack() {
+    StackNode* current = top;
+    if (current == NULL) {
+        printf("Стек пуст\n");
+        return;
+    }
+    while (current) {
+        printf("Элемент: %s\n", current->inf);
+        current = current->next;
+    }
+}
+
+// Поиск элемента в стеке по содержимому
+StackNode* findInStack(const char* name) {
+    StackNode* current = top;
+    if (current == NULL) {
+        printf("Стек пуст\n");
+        return NULL;
+    }
+    while (current) {
+        if (strcmp(name, current->inf) == 0) {
+            return current;
+        }
+        current = current->next;
+    }
+    printf("Элемент не найден\n");
+    return NULL;
+}
+
 int main() {
     setlocale(LC_ALL, "Russian");
 
@@ -206,6 +277,35 @@ int main() {
     review_queue();
     dequeue();
     review_queue();
+    
+    char name1[256];
+    char name2[256];
+    char name3[256];
+    char name4[256];
+
+    printf("Введите имя элемента для добавления в стек: ");
+    scanf("%255s", name1);
+    printf("Введите имя элемента для добавления в стек: ");
+    scanf("%255s", name2);
+    printf("Введите имя элемента для добавления в стек: ");
+    scanf("%255s", name3);
+
+    push(name1);
+    push(name2);    
+    push(name3);
+
+    reviewStack();
+
+    pop();
+    reviewStack();
+
+    printf("Введите имя элемента для поиска в списке: ");
+    scanf("%255s", name4);
+
+    StackNode* found = findInStack(name4);
+    if (found) {
+        printf("Элемент найден: %s\n", found->inf);
+    }
 
     return 0;
 }
