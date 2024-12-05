@@ -132,7 +132,7 @@ struct QueueNode* getQueue() {
     }
 
     char s[256];
-    printf("Введите название объекта: \n");
+    printf("Введите название объекта для очереди: \n");
     scanf("%255s", s);
     if (*s == 0) {
         printf("Запись не была произведена\n");
@@ -191,14 +191,13 @@ void review_queue() {
 // ---Стек---
 
 struct StackNode {
-    char inf[256];  // Полезная информация (данные)
-    StackNode* next; // Указатель на следующий элемент
+    char inf[256];
+    StackNode* next;
 };
 
 // Указатель на вершину стека
 StackNode* top = NULL;
 
-// Функция для создания нового элемента стека
 StackNode* createStackNode(const char* data) {
     StackNode* newNode = (StackNode*)malloc(sizeof(StackNode));
     if (!newNode) {
@@ -210,14 +209,14 @@ StackNode* createStackNode(const char* data) {
     return newNode;
 }
 
-// Функция добавления в стек (push)
+
 void push(const char* data) {
     StackNode* newNode = createStackNode(data);
-    newNode->next = top;  // Новый элемент указывает на текущую вершину
-    top = newNode;        // Вершина теперь указывает на новый элемент
+    newNode->next = top;
+    top = newNode;
 }
 
-// Функция удаления из стека (pop)
+
 void pop() {
     if (top == NULL) {
         printf("Стек пуст\n");
@@ -225,11 +224,11 @@ void pop() {
     }
     StackNode* temp = top;
     printf("Удаление элемента: %s\n", temp->inf);
-    top = top->next;  // Вершина смещается на следующий элемент
-    free(temp);       // Освобождаем память удаленного элемента
+    top = top->next;
+    free(temp);
 }
 
-// Просмотр содержимого стека
+
 void reviewStack() {
     StackNode* current = top;
     if (current == NULL) {
@@ -242,7 +241,7 @@ void reviewStack() {
     }
 }
 
-// Поиск элемента в стеке по содержимому
+
 StackNode* findInStack(const char* name) {
     StackNode* current = top;
     if (current == NULL) {
@@ -274,6 +273,7 @@ int main() {
 
     enqueue();
     enqueue();
+    enqueue();
     review_queue();
     dequeue();
     review_queue();
@@ -299,7 +299,7 @@ int main() {
     pop();
     reviewStack();
 
-    printf("Введите имя элемента для поиска в списке: ");
+    printf("Введите имя элемента для поиска в стеке: ");
     scanf("%255s", name4);
 
     StackNode* found = findInStack(name4);
