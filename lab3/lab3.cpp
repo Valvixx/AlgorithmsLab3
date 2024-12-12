@@ -72,7 +72,6 @@ void review_list() {
     }
 }
 
-/* Удаление элемента по содержимому */
 void del(char* name) {
     struct node* struc = head;
     struct node* prev = NULL;
@@ -83,19 +82,30 @@ void del(char* name) {
         return;
     }
 
-    // Удаление первого элемента, если он совпадает
-    if (strcmp(name, struc->inf) == 0) {
+    // Удаляем все элементы, начиная с головы, пока они совпадают с именем
+    while (head != NULL && strcmp(name, head->inf) == 0) {
         flag = 1;
-        head = struc->next;
-        free(struc);
-        if (head == NULL) last = NULL; // Обновляем last, если удален единственный элемент
+        struct node* temp = head;
+        head = head->next;
+        free(temp);
+    }
+
+    // Если список стал пустым, обновляем указатель last
+    if (head == NULL) {
+        last = NULL;
+        if (flag) {
+            printf("Все элементы с именем '%s' удалены\n", name);
+        }
+        else {
+            printf("Элемент не найден\n");
+        }
         return;
     }
 
-    prev = struc;
-    struc = struc->next;
+    prev = head;
+    struc = head->next;
 
-    // Поиск и удаление других элементов
+    // Удаляем остальные элементы
     while (struc) {
         if (strcmp(name, struc->inf) == 0) {
             flag = 1;
@@ -104,13 +114,18 @@ void del(char* name) {
                 last = prev; // Обновляем last, если удаляем последний элемент
             }
             free(struc);
-            return;
+            struc = prev->next; // Обновляем текущий элемент после удаления
         }
-        prev = struc;
-        struc = struc->next;
+        else {
+            prev = struc;
+            struc = struc->next;
+        }
     }
 
-    if (!flag) {
+    if (flag) {
+        printf("Все элементы с именем '%s' удалены\n", name);
+    }
+    else {
         printf("Элемент не найден\n");
     }
 }
